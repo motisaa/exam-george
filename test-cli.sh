@@ -12,7 +12,7 @@ aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-support "{\"Value\":t
 aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-hostnames "{\"Value\":true}" --region $region
 echo "VPC creada con ID: $vpc_id"
 
-aws ec2 wait vpc-exists --vpc-ids $vpc_id
+aws ec2 wait vpc-available --vpc-ids $vpc_id
 
 # Desarrollo
 
