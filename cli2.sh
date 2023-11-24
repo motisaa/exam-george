@@ -1,36 +1,65 @@
 #!/bin/bash
+
 # Variables
-region="us-east-1" # Cambia esto a la región de tu preferencia
-vpc_cidr_block="192.168.0.0/22"
+vpc_name="VPC-MotiJuan"
+region="us-east-1"
+cidr_block="192.168.0.0/22"
 
 # Crear VPC
-vpc_id=$(aws ec2 create-vpc --cidr-block $vpc_cidr_block --query 'Vpc.VpcId' --output text)
+vpc_id=$(aws ec2 create-vpc --cidr-block $cidr_block --query 'Vpc.VpcId' --output text --region $region)
+aws ec2 create-tags --resources $vpc_id --tags Key=Name,Value=$vpc_name --region $region
+aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-support "{\"Value\":true}" --region $region
+aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-hostnames "{\"Value\":true}" --region $region
+echo "VPC creada con ID: $vpc_id"
 
-# Configurar VPC para DNS hostnames y DNS support
-aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-support "{\"Value\":true}"
-aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-hostnames "{\"Value\":true}"
+# Desarrollo
+name="desarrollo"
+count=500
+subnet_cidr="192.168.0.0/23"
+subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $region --query 'Subnet.SubnetId' --output text --region $region)
+instance_name="ec2-$name"
+for ((i=1; i<=$count; i++)); do
+    aws ec2 run-instances --image-id ami-xxxxxxxxxxxxx --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+done
+echo "Subred y EC2 para $name creadas"
 
-# Crear subredes
-function crear_subredes {
-  nombre_departamento=$1
-  cidr_block=$2
-  subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $cidr_block --query 'Subnet.SubnetId' --output text)
+((subnet_index++))
 
-  # Crear una instancia EC2 en la subred
-  instance_id=$(aws ec2 run-instances \
-    --image-id ami-050406429a71aaa64 \
-    --instance-type t2.micro \
-    --subnet-id $subnet_id \
-    --query 'Instances.InstanceId' \
-    --output text)
+# Soporte
+name="soporte"
+count=250
+subnet_cidr="192.168.2.0/24"
+subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $region --query 'Subnet.SubnetId' --output text --region $region)
+instance_name="ec2-$name"
+for ((i=1; i<=$count; i++)); do
+    aws ec2 run-instances --image-id ami-xxxxxxxxxxxxx --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+done
+echo "Subred y EC2 para $name creadas"
 
-  # Asignar nombre a la instancia
-  aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=ec2-$nombre_departamento
-  echo "Creado: Subred $nombre_departamento ($cidr_block), Instancia EC2: ec2-$nombre_departamento"
-}
+((subnet_index++))
 
-# Crear subredes para cada departamento
-crear_subredes "desarrollo" "192.168.0.0/23"
-crear_subredes "soporte" "192.168.2.0/24"
-crear_subredes "ingenieria" "192.168.3.0/25"
-crear_subredes "mantenimiento" "192.168.3.128/27"
+# Ingeniería
+name="ingenieria"
+count=100
+subnet_cidr="192.168.3.0/25"
+subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $region --query 'Subnet.SubnetId' --output text --region $region)
+instance_name="ec2-$name"
+for ((i=1; i<=$count; i++)); do
+    aws ec2 run-instances --image-id ami-xxxxxxxxxxxxx --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+done
+echo "Subred y EC2 para $name creadas"
+
+((subnet_index++))
+
+# Mantenimiento
+name="mantenimiento"
+count=20
+subnet_cidr="192.168.3.128/27"
+subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $region --query 'Subnet.SubnetId' --output text --region $region)
+instance_name="ec2-$name"
+for ((i=1; i<=$count; i++)); do
+    aws ec2 run-instances --image-id ami-xxxxxxxxxxxxx --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+done
+echo "Subred y EC2 para $name creadas"
+
+echo "Script completado"
