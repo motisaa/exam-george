@@ -13,7 +13,7 @@ echo "VPC creada con ID: $vpc_id"
 # Habilitar la resolución DNS y asignar un nombre a la VPC
 aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-support "{\"Value\":true}" --region $region
 aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-hostnames "{\"Value\":true}" --region $region
-aws ec2 create-tags --resources $vpc_id --tags Key=Name,Value=CRUsystemVPC --region $region
+aws ec2 create-tags --resources $vpc_id --tags Key=Name,Value=CRUsystemVPCMotiJuan --region $region
 
 # Crear subredes y máquinas EC2
 for ((i=0; i<${#subnet_cidr_blocks[@]}; i++)); do
