@@ -4,7 +4,7 @@ region="us-east-1" # Cambia esto a la región de tu preferencia
 vpc_cidr_block="192.168.0.0/22"
 
 # Crear VPC
-vpc_id=$(aws ec2 create-vpc --cidr-block $vpc_cidr_block --query 'Vpc.VpcId' --output text)
+vpc_id=$(aws ec2 create-vpc --cidr-block $vpc_cidr_block --query 'Vpc.VpcId' --output text --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=MyVpc}]')
 
 # Configurar VPC para DNS hostnames y DNS support
 aws ec2 modify-vpc-attribute --vpc-id $vpc_id --enable-dns-support "{\"Value\":true}"
@@ -22,10 +22,9 @@ function crear_subredes {
     --instance-type t2.micro \
     --subnet-id $subnet_id \
     --query 'Instances.InstanceId' \
+    --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=ec2-$nombre_departamento}]'
     --output text)
 
-  # Asignar nombre a la instancia
-  aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=ec2-$nombre_departamento
   echo "Creado: Subred $nombre_departamento ($cidr_block), Instancia EC2: ec2-$nombre_departamento"
 }
 
