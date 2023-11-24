@@ -19,7 +19,7 @@ name="desarrollo"
 subnet_cidr="192.168.0.0/23"
 subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $availability_zone --query 'Subnet.SubnetId' --output text --region $region)
 instance_name="ec2-$name"
-aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=ec2-desarrollo}]" --region $region
 
 echo "Subred y EC2 para $name creadas"
 
@@ -29,7 +29,7 @@ name="soporte"
 subnet_cidr="192.168.2.0/24"
 subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $availability_zone --query 'Subnet.SubnetId' --output text --region $region)
 instance_name="ec2-$name"
-aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=ec2-soporte}]" --region $region
 
 echo "Subred y EC2 para $name creadas"
 
@@ -39,7 +39,7 @@ name="ingenieria"
 subnet_cidr="192.168.3.0/25"
 subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $availability_zone --query 'Subnet.SubnetId' --output text --region $region)
 instance_name="ec2-$name"
-aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=ec2-ingenieria}]" --region $region
 
 echo "Subred y EC2 para $name creadas"
 
@@ -49,7 +49,7 @@ name="mantenimiento"
 subnet_cidr="192.168.3.128/27"
 subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $availability_zone --query 'Subnet.SubnetId' --output text --region $region)
 instance_name="ec2-$name"
-aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance_name-$i}]" --region $region
+aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=ec2-mantenimiento}]" --region $region
 
 echo "Subred y EC2 para $name creadas"
 
